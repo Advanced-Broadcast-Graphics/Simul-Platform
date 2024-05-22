@@ -80,14 +80,7 @@ void MouseHandler::setAltitudeRange(float m,float M)
 static float uu=750.f;
 void MouseHandler::mouseMove(int x,int y)
 {
-	int dx=x-MouseX;
-	int dy=y-MouseY;
-	fDeltaX=dx/uu;
-	fDeltaY=dy/uu;
-	MouseX=x;
-	MouseY=y;
-	if (updateViews)
-		updateViews();
+	BaseMouseHandler::mouseMove(x, y);
 }
 #pragma optimize("",off)
 vec3 MouseHandler::getMouseDirection(int x,int y,int viewport_x,int viewport_y) const
@@ -142,8 +135,7 @@ void MouseHandler::mouseWheel(int delta,int modifiers)
 			wheel_backward=5*mult;
 	}
 	camera->SetVerticalFieldOfViewDegrees(0);
-	if (updateViews)
-		updateViews();
+	BaseMouseHandler::mouseWheel(delta,  modifiers);
 }
 
 platform::crossplatform::Camera *MouseHandler::GetCamera()

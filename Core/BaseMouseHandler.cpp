@@ -22,7 +22,9 @@ void BaseMouseHandler::mouseRelease(int button,int x,int y)
 {
 	*((int*)&mouseButtons)&=(~button);
 	MouseX=x;
-	MouseY=y;
+	MouseY = y;
+	if (mouseEvent)
+		mouseEvent(MouseEventType::Release, (MouseButtons)button, x, y);
 	UpdateViews();
 }
 
@@ -30,14 +32,18 @@ void BaseMouseHandler::mousePress(int button,int x,int y)
 {
 	*((int*)&mouseButtons)|=button;
 	MouseX=x;
-	MouseY=y;
+	MouseY = y;
+	if (mouseEvent)
+		mouseEvent(MouseEventType::Press, (MouseButtons)button, x, y);
 	UpdateViews();
 }
 
-void BaseMouseHandler::mouseDoubleClick(int ,int x,int y)
+void BaseMouseHandler::mouseDoubleClick(int b,int x,int y)
 {
 	MouseX=x;
-	MouseY=y;
+	MouseY = y;
+	if (mouseEvent)
+		mouseEvent(MouseEventType::DoubleClick, (MouseButtons)b, x, y);
 	UpdateViews();
 }
 void BaseMouseHandler::UpdateViews()
@@ -59,7 +65,9 @@ void BaseMouseHandler::mouseMove(int x,int y)
 	fDeltaX=dx/float(view_width);
 	fDeltaY=dy/float(view_height);
 	MouseX=x;
-	MouseY=y;
+	MouseY = y;
+	if (mouseEvent)
+		mouseEvent(MouseEventType::Move, MouseButtons::NoButton, x, y);
 	UpdateViews();
 }
 
@@ -69,8 +77,10 @@ void BaseMouseHandler::getMousePosition(int &x,int &y) const
 	y=MouseY;
 }
 
-void BaseMouseHandler::mouseWheel(int ,int )
+void BaseMouseHandler::mouseWheel(int x,int y)
 {
+	if(mouseEvent)
+		mouseEvent(MouseEventType::Wheel, MouseButtons::NoButton, x, y);
 	UpdateViews();
 }
 
@@ -79,8 +89,6 @@ void BaseMouseHandler::SetViewSize(int w, int h)
 	view_width = w;
 	view_height= h;
 }
-
-
 
 void BaseMouseHandler::KeyboardProc(unsigned int /*nChar*/, bool bKeyDown, bool )
 {

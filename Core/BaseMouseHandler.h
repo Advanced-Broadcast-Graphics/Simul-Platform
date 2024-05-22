@@ -10,7 +10,7 @@ namespace platform
 {
 	namespace core
 	{
-		enum  MouseButtons
+		enum MouseButtons
 		{
 			NoButton = 0,
 			LeftButton = 1,
@@ -26,8 +26,19 @@ namespace platform
 			Alt = 2,
 			Ctrl = 4,
 		};
+		enum class MouseEventType
+		{
+			None = 0,
+			Press = 1,
+			Release= 2,
+			DoubleClick= 4,
+			Move=8,
+			Wheel
+		};
 		// A simple render delegate, it will usually be a function partially bound with std::bind.
 		typedef std::function<void()> VoidFnDelegate;
+		typedef std::function<void(MouseEventType, MouseButtons, int, int)> MouseFnDelegate;
+		typedef std::function<void(int, bool )> KeyboardFnDelegate;
 		class PLATFORM_CORE_EXPORT BaseMouseHandler
 		{
 		public:
@@ -40,10 +51,12 @@ namespace platform
 			virtual void getMousePosition(int &x, int &y) const;
 			virtual void mouseWheel(int delta, int modifiers);
 			virtual void KeyboardProc(unsigned int nChar, bool bKeyDown, bool bAltDown);
-			virtual MouseButtons	getMouseButtons() const;
+			virtual MouseButtons getMouseButtons() const;
 			void SetViewSize(int w, int h);
 			VoidFnDelegate updateViews;
 			VoidFnDelegate valuesChanged;
+			MouseFnDelegate mouseEvent;
+			KeyboardFnDelegate keyboardEvent;
 		protected:
 			float fDeltaX, fDeltaY;
 			int MouseX, MouseY;
